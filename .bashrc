@@ -9,6 +9,12 @@ alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
 export _JAVA_AWT_WM_NONREPARENTING=1 &
+export ANDROID_HOME='/opt/android-sdk' &
+export PATH=$PATH:$ANDROID_HOME/emulator & 
+export PATH=$PATH:$ANDROID_HOME/platform-tools/ &
+export PATH=$PATH:$ANDROID_HOME/tools/bin/ &
+export PATH=$PATH:$ANDROID_HOME/tools/ &
+PATH=$ANDROID_HOME/emulator:$PATH &
 
 
 [ -d "/opt/android-sdk/" ] && ANDROID_SDK=/opt/android-sdk/ || ANDROID_SDK=/opt/android-sdk/
