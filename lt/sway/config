@@ -1,42 +1,24 @@
-set $opacity 0.89
-for_window [app_id="baobab"] floating enable
-for_window [app_id="Alacritty"] floating enable
-for_window [app_id="Alacritty"] opacity $opacity
-for_window [app_id="pavucontrol"] floating enable
 
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
+set $opacity 0.89
+for_window [class="firefox"] opacity $opacity
+for_window [class="discord"] opacity $opacity
 
 ### Variables
-#
-# Logo key. Use Mod1 for Alt.
 set $mod Mod4
-# Home row direction keys, like vim
-set $left h
-set $down j
-set $up k
+set $left j
+set $down k
+set $up i
 set $right l
-# Your preferred terminal emulator
 set $term alacritty
-# Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
-set $menu rofi -show drun | xargs swaymsg exec --
-set $fm pcmanfm
+set $menu rofi -show drun
+set $fmenu rofi -show run
+
 
 ### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg ~/Downloads/bg.png fill
-#
-# Example configuration:
-#
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
+output HDMI-A-1 pos 0 244 res 1366x768
+output HDMI-A-2 pos 1366 0 res 1600x1080
+
+output * bg /home/persist/Downloads/bg.jpg stretch
 
 ### Idle configuration
 #
@@ -44,7 +26,8 @@ output * bg ~/Downloads/bg.png fill
 #
 # exec swayidle -w \
 #          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+#          timeout 600 'swaymsg "output * dpms off"' \
+#               resume 'swaymsg "output * dpms on"' \
 #          before-sleep 'swaylock -f -c 000000'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
@@ -58,7 +41,7 @@ output * bg ~/Downloads/bg.png fill
 #   input "2:14:SynPS/2_Synaptics_TouchPad" {
 #       dwt enabled
 #       tap enabled
-#       natural_scroll enabled
+#       natural_scroll enabl Normal guibg=NONE ctermbg=NONEed
 #       middle_emulation enabled
 #   }
 #
@@ -70,32 +53,38 @@ output * bg ~/Downloads/bg.png fill
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+space exec $term
+    bindsym $mod+Space exec $term
 
     # Kill focused window
     bindsym $mod+Shift+x kill
 
     # Start your launcher
     bindsym $mod+d exec $menu
-    bindsym $mod+Shift+d exec $fm
+    bindsym $mod+Shift+space exec $fmenu
 
-#
+    # Start File Manager
+    bindsym $mod+Shift+d exec pcmanfm
+
     # Screenshots
-    set $ss grim /home/bank/Pictures/screenshot.png
+    set $ss grim /home/persist/Pictures/screenshot.png
     bindsym $mod+Print exec $ss
 
-    set $spss grim -g "$(slurp)" /home/bank/Pictures/snippet.png
+    set $spss grim -g "$(slurp)" /home/persist/Pictures/snippet.png
     bindsym Shift+Print exec $spss
 
     bindsym --release Print exec grim -g \"$(slurp)" - | wl-copy
 
     # Screen Capture
-    bindsym $mod+Shift+y exec wf-recorder -g "$$(slurp)" -f /home/bank/Videos/screencapture.mp4
-    bindsym $mod+Shift+u exec killall -s SIGINT wf-recorder
+    bindsym $mod+y exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/screencapture_left.mp4
 
-    # Screen Brightness
-    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+    bindsym $mod+u exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/screencapture_right.mp4
+
+    bindsym $mod+Shift+h exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/sc_duo_l.mp4 && wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/sc_duo_r.mp4
+
+    bindsym $mod+Shift+y exec wf-recorder -g "$$(slurp)" -f /home/persist/Videos/screencapture.mp4
+
+bindsym $mod+Shift+u exec killall -s SIGINT wf-recorder
+
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -150,32 +139,44 @@ output * bg ~/Downloads/bg.png fill
     bindsym $mod+Shift+Right move right
 
 # Workspaces:
-#
+    workspace 1 output HDMI-A-1
+    workspace 2 output HDMI-A-1
+    workspace 3 output HDMI-A-2
+    workspace 4 output HDMI-A-2
+    workspace 5 output HDMI-A-1
+    workspace 6 output HDMI-A-1
+    workspace 7 output HDMI-A-2
+    workspace 8 output HDMI-A-2
+    workspace 9 output HDMI-A-1
+    workspace 10 output HDMI-A-1
+
     # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
-    bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
+    bindsym $mod+1 workspace 1
+    bindsym $mod+2 workspace 2
+    bindsym $mod+q workspace 3
+    bindsym $mod+w workspace 4
+    bindsym $mod+3 workspace 5
+    bindsym $mod+4 workspace 6
+    bindsym $mod+e workspace 7
+    bindsym $mod+r workspace 8
+    bindsym $mod+5 workspace 9
+    bindsym $mod+6 workspace 10
+
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
+    bindsym $mod+Shift+1 move container to workspace 1
+    bindsym $mod+Shift+2 move container to workspace 2
+    bindsym $mod+Shift+q move container to workspace 3
+    bindsym $mod+Shift+w move container to workspace 4
+    bindsym $mod+Shift+3 move container to workspace 5
+    bindsym $mod+Shift+4 move container to workspace 6
+    bindsym $mod+Shift+e move container to workspace 7
+    bindsym $mod+Shift+r move container to workspace 8
+    bindsym $mod+Shift+5 move container to workspace 9
+    bindsym $mod+Shift+6 move container to workspace 10
+
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
-    #
+#
 # Layout stuff:
 #
     # You can "split" the current object of your focus with
@@ -220,14 +221,14 @@ mode "swap" {
         # switch to workspace
 	bindsym $mod+1 workspace 1
 	bindsym $mod+2 workspace 2
-	bindsym $mod+3 workspace 3
-	bindsym $mod+4 workspace 4
-	bindsym $mod+5 workspace 5
-	bindsym $mod+6 workspace 6
-	bindsym $mod+7 workspace 7
-	bindsym $mod+8 workspace 8
-	bindsym $mod+9 workspace 9
-	bindsym $mod+0 workspace 10
+	bindsym $mod+q workspace 3
+	bindsym $mod+w workspace 4
+	bindsym $mod+3 workspace 5
+	bindsym $mod+4 workspace 6
+	bindsym $mod+e workspace 7
+	bindsym $mod+r workspace 8
+	bindsym $mod+5 workspace 9
+	bindsym $mod+6 workspace 10
 
 	# change focus
 	bindsym $mod+Left focus left

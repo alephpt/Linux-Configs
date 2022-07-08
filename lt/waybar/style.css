@@ -79,29 +79,28 @@ label:focus {
 
 #cpu {
     margin-right:0px;
-    padding: 1px 6px 0px 6px;	
+    background-color: rgba(167,90,123,.6);
+    padding: 1px 12px 0px 12px;	
 }
 
 #memory {
     margin-left: 0px;
     margin-right: 0px;
+    background-color: rgba(150,157,79,.6);
     padding: 1px 9px 0px 9px;
 }
 
 #disk {
     margin-left: 0px;
     margin-right: 3px;
-    padding: 1px 3px 0px 5px;
-}    
-
-#backlight {
-    margin-right: 3px;
+    background-color: rgba(108,143,174,.6);
     padding: 1px 5px 0px 5px;
-}
+}    
 
 #pulseaudio {
     margin: 0px 6px 0px 4px;
-    padding: 1px 3px 0px 3px;
+    background-color: rgba(122,76,43,.7);
+    padding: 1px 6px 0px 5px;
 }
 
 #pulseaudio.muted {
