@@ -6,7 +6,15 @@
 [[ $- != *i* ]] && return
 
 alias ls='ls --color=auto'
+alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
+. "$HOME/.cargo/env"
+source /usr/share/nvm/init-nvm.sh
+[ -z /home/persist/.nvm ] && export NVM_DIR=/home/persist/.nvm
+source /usr/share/nvm/nvm.sh
+source /usr/share/nvm/bash_completion
+source /usr/share/nvm/install-nvm-exec
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export _JAVA_AWT_WM_NONREPARENTING=1
 export ANDROID_HOME='/opt/android-sdk' 

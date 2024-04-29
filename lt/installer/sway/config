@@ -1,10 +1,16 @@
 
-set $opacity 0.89
+set $opacity 0.97
 for_window [class="firefox"] opacity $opacity
 for_window [class="discord"] opacity $opacity
+for_window [app_id="Alacritty"] opacity $opacity
+for_window [class="Slack"] opacity $opacity
+for_window [class="Pcmanfm"] opacity $opacity
+for_window [class="Google-chrome"] opacity $opacity
+for_window [class="Spotify"] opacity $opacity
 
 ### Variables
 set $mod Mod4
+set $alt Mod1
 set $left j
 set $down k
 set $up i
@@ -15,26 +21,29 @@ set $fmenu rofi -show run
 
 
 ### Output configuration
-output HDMI-A-1 pos 0 244 res 1366x768
-output HDMI-A-2 pos 1366 0 res 1600x1080
+output DP-2 pos 0 0
+output DP-1 pos 2560 0 
+output HDMI-A-1 pos 5120 0
 
-output * bg /home/persist/Downloads/bg.jpg stretch
+output DP-2 bg /home/persist/Downloads/bg1.jpg stretch
+output DP-1 bg /home/persist/Downloads/bg2.jpg stretch
+output HDMI-A-1 bg /home/persist/Downloads/bg3.jpg stretch
 
 ### Idle configuration
 #
 # Example configuration:
 #
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * dpms off"' \
-#               resume 'swaymsg "output * dpms on"' \
-#          before-sleep 'swaylock -f -c 000000'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
+exec swayidle -w \
+   timeout 900 'swaymsg "output * dpms off"' \
+   resume 'swaymsg "output * dpms on"'
 
-### Input configuration
+## Manual Lock
+bindsym $mod+Escape exec swayidle -w \
+  timeout 1 'swaymsg "output * dpms off"' \
+  resume 'swaymsg "output * dpms on" && pkill --newest swayidle' &
+
+
+
 #
 # Example configuration:
 #
@@ -65,25 +74,37 @@ output * bg /home/persist/Downloads/bg.jpg stretch
     # Start File Manager
     bindsym $mod+Shift+d exec pcmanfm
 
-    # Screenshots
-    set $ss grim /home/persist/Pictures/screenshot.png
-    bindsym $mod+Print exec $ss
+    ## Screenshots
+    #set $ss grim /home/persist/Pictures/screenshot.png
+    #bindsym $mod+Print exec $ss
 
-    set $spss grim -g "$(slurp)" /home/persist/Pictures/snippet.png
-    bindsym Shift+Print exec $spss
+    #set $spss grim -g "$(slurp)" /home/persist/Pictures/snippet.png
+    #bindsym Shift+Print exec $spss
 
     bindsym --release Print exec grim -g \"$(slurp)" - | wl-copy
 
     # Screen Capture
-    bindsym $mod+y exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/screencapture_left.mp4
+    #bindsym $mod+y exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/screencapture_left.mp4
 
-    bindsym $mod+u exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/screencapture_right.mp4
+    #bindsym $mod+u exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/screencapture_right.mp4
 
-    bindsym $mod+Shift+h exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/sc_duo_l.mp4 && wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/sc_duo_r.mp4
+    #bindsym $mod+Shift+h exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/sc_duo_l.mp4 && wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/sc_duo_r.mp4
 
-    bindsym $mod+Shift+y exec wf-recorder -g "$$(slurp)" -f /home/persist/Videos/screencapture.mp4
+    bindsym $mod+Print exec wf-recorder -g "$$(slurp)" -f /home/persist/Videos/screencapture.mp4
 
-bindsym $mod+Shift+u exec killall -s SIGINT wf-recorder
+    bindsym $mod+Shift+Print exec killall -s SIGINT wf-recorder
+
+    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioPrev exec playerctl previous
+    bindsym XF86AudioNext exec playerctl next
+
+    # Windows Alt+Tab switching between windows 
+    # TODO: Add Feature to allow "minimized tabular display"
+#    bindsym $alt+tab exec ~/.config/sway/alttab next
+#    bindsym $alt+Shift+tab exec ~/.config/sway/alttab prev
 
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -139,40 +160,28 @@ bindsym $mod+Shift+u exec killall -s SIGINT wf-recorder
     bindsym $mod+Shift+Right move right
 
 # Workspaces:
-    workspace 1 output HDMI-A-1
-    workspace 2 output HDMI-A-1
-    workspace 3 output HDMI-A-2
-    workspace 4 output HDMI-A-2
-    workspace 5 output HDMI-A-1
+    workspace 1 output DP-2
+    workspace 2 output DP-1
+    workspace 3 output HDMI-A-1
+    workspace 4 output DP-2
+    workspace 5 output DP-1
     workspace 6 output HDMI-A-1
-    workspace 7 output HDMI-A-2
-    workspace 8 output HDMI-A-2
-    workspace 9 output HDMI-A-1
-    workspace 10 output HDMI-A-1
 
     # Switch to workspace
     bindsym $mod+1 workspace 1
     bindsym $mod+2 workspace 2
-    bindsym $mod+q workspace 3
-    bindsym $mod+w workspace 4
-    bindsym $mod+3 workspace 5
-    bindsym $mod+4 workspace 6
-    bindsym $mod+e workspace 7
-    bindsym $mod+r workspace 8
-    bindsym $mod+5 workspace 9
-    bindsym $mod+6 workspace 10
+    bindsym $mod+3 workspace 3
+    bindsym $mod+q workspace 4
+    bindsym $mod+w workspace 5
+    bindsym $mod+e workspace 6
 
     # Move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace 1
     bindsym $mod+Shift+2 move container to workspace 2
-    bindsym $mod+Shift+q move container to workspace 3
-    bindsym $mod+Shift+w move container to workspace 4
-    bindsym $mod+Shift+3 move container to workspace 5
-    bindsym $mod+Shift+4 move container to workspace 6
-    bindsym $mod+Shift+e move container to workspace 7
-    bindsym $mod+Shift+r move container to workspace 8
-    bindsym $mod+Shift+5 move container to workspace 9
-    bindsym $mod+Shift+6 move container to workspace 10
+    bindsym $mod+Shift+3 move container to workspace 3
+    bindsym $mod+Shift+q move container to workspace 4
+    bindsym $mod+Shift+w move container to workspace 5
+    bindsym $mod+Shift+e move container to workspace 6
 
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
@@ -221,14 +230,10 @@ mode "swap" {
         # switch to workspace
 	bindsym $mod+1 workspace 1
 	bindsym $mod+2 workspace 2
-	bindsym $mod+q workspace 3
-	bindsym $mod+w workspace 4
-	bindsym $mod+3 workspace 5
-	bindsym $mod+4 workspace 6
-	bindsym $mod+e workspace 7
-	bindsym $mod+r workspace 8
-	bindsym $mod+5 workspace 9
-	bindsym $mod+6 workspace 10
+	bindsym $mod+3 workspace 3
+	bindsym $mod+q workspace 4
+	bindsym $mod+w workspace 5
+	bindsym $mod+e workspace 6
 
 	# change focus
 	bindsym $mod+Left focus left
