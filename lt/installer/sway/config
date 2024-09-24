@@ -1,4 +1,3 @@
-
 set $opacity 0.97
 for_window [class="firefox"] opacity $opacity
 for_window [class="discord"] opacity $opacity
@@ -7,6 +6,9 @@ for_window [class="Slack"] opacity $opacity
 for_window [class="Pcmanfm"] opacity $opacity
 for_window [class="Google-chrome"] opacity $opacity
 for_window [class="Spotify"] opacity $opacity
+
+for_window [app_id="one.alynx.showmethekey"] floating enable, sticky enable
+
 
 ### Variables
 set $mod Mod4
@@ -22,7 +24,7 @@ set $fmenu rofi -show run
 
 ### Output configuration
 output DP-2 pos 0 0
-output DP-1 pos 2560 0 
+output DP-1 pos 2560 0
 output HDMI-A-1 pos 5120 0
 
 output DP-2 bg /home/persist/Downloads/bg1.jpg stretch
@@ -90,9 +92,9 @@ bindsym $mod+Escape exec swayidle -w \
 
     #bindsym $mod+Shift+h exec wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-1 -f /home/persist/Videos/sc_duo_l.mp4 && wf-recorder -a --audio=alsa_output.usb-PreSonus_Audio_AudioBox_USB-01.analog-stereo.monitor -o HDMI-A-2 -f /home/persist/Videos/sc_duo_r.mp4
 
-    bindsym $mod+Print exec wf-recorder -g "$$(slurp)" -f /home/persist/Videos/screencapture.mp4
+    bindsym $mod+Print exec wf-recorder -g "$(slurp)" -c h264_vaapi -d /dev/dri/renderD128 -f /home/persist/Videos/screencapture.mp4
 
-    bindsym $mod+Shift+Print exec killall -s SIGINT wf-recorder
+    bindsym $mod+Shift+Print exec killall -SIGKILL wf-recorder
 
     bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
     bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
@@ -101,7 +103,7 @@ bindsym $mod+Escape exec swayidle -w \
     bindsym XF86AudioPrev exec playerctl previous
     bindsym XF86AudioNext exec playerctl next
 
-    # Windows Alt+Tab switching between windows 
+    # Windows Alt+Tab switching between windows
     # TODO: Add Feature to allow "minimized tabular display"
 #    bindsym $alt+tab exec ~/.config/sway/alttab next
 #    bindsym $alt+Shift+tab exec ~/.config/sway/alttab prev
@@ -276,4 +278,3 @@ bar {
 }
 
 include /etc/sway/config.d/*
-
